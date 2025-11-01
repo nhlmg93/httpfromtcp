@@ -40,9 +40,14 @@ func (h Headers) Parse(data []byte) (n int, done bool, err error) {
 		if !isValidToken([]byte(name)) {
 			return 0, false, fmt.Errorf("malformed header name")
 		}
-
 		n += idx + len(crlf)
-		h.Set(name, value)
+		v := h.Get(name)
+		if v != "" {
+			v = v + ", " + value
+			h.Set(name, v)
+		} else {
+			h.Set(name, value)
+		}
 	}
 	return n, done, err
 }
