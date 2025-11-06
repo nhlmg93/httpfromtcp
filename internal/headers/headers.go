@@ -17,7 +17,13 @@ func (h Headers) Get(name string) string {
 	return h[strings.ToLower(name)]
 }
 func (h Headers) Set(name, value string) {
-	h[strings.ToLower(name)] = value
+	name = strings.ToLower(name)
+	if v, ok := h[name]; ok {
+		h[name] = v + ", " + value
+
+	} else {
+		h[name] = value
+	}
 }
 func (h Headers) Parse(data []byte) (n int, done bool, err error) {
 	n = 0
@@ -41,13 +47,7 @@ func (h Headers) Parse(data []byte) (n int, done bool, err error) {
 			return 0, false, fmt.Errorf("malformed header name")
 		}
 		n += idx + len(crlf)
-		v := h.Get(name)
-		if v != "" {
-			v = v + ", " + value
-			h.Set(name, v)
-		} else {
-			h.Set(name, value)
-		}
+		h.Set(name, value)
 	}
 	return n, done, err
 }
