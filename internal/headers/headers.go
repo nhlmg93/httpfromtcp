@@ -13,8 +13,9 @@ const crlf = "\r\n"
 func NewHeaders() Headers {
 	return make(Headers)
 }
-func (h Headers) Get(name string) string {
-	return h[strings.ToLower(name)]
+func (h Headers) Get(name string) (string, bool) {
+	v, ok := h[strings.ToLower(name)]
+	return v, ok
 }
 func (h Headers) Set(name, value string) {
 	name = strings.ToLower(name)
